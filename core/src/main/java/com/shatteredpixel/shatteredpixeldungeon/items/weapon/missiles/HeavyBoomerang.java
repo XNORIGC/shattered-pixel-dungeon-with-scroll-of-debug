@@ -42,12 +42,13 @@ public class HeavyBoomerang extends MissileWeapon {
 		
 		tier = 4;
 		sticky = false;
+		baseUses = 5;
 	}
 	
 	@Override
 	public int max(int lvl) {
 		return  4 * tier +                  //16 base, down from 20
-				(tier) * lvl;               //scaling unchanged
+				(tier-1) * lvl;             //3 scaling, down from 4
 	}
 
 	boolean circleBackhit = false;
@@ -55,7 +56,6 @@ public class HeavyBoomerang extends MissileWeapon {
 	@Override
 	protected float adjacentAccFactor(Char owner, Char target) {
 		if (circleBackhit){
-			circleBackhit = false;
 			return 1.5f;
 		}
 		return super.adjacentAccFactor(owner, target);
@@ -95,7 +95,7 @@ public class HeavyBoomerang extends MissileWeapon {
 			this.returnPos = returnPos;
 			this.returnDepth = returnDepth;
 			this.returnBranch = returnBranch;
-			left = 3;
+			left = 4;
 		}
 		
 		public int returnPos(){
@@ -141,6 +141,7 @@ public class HeavyBoomerang extends MissileWeapon {
 												if (((Hero)target).shoot( returnTarget, boomerang )) {
 													boomerang.decrementDurability();
 												}
+												boomerang.circleBackhit = false;
 												if (!boomerang.spawnedForEffect && boomerang.durability > 0) {
 													Dungeon.level.drop(boomerang, returnPos).sprite.drop();
 												}

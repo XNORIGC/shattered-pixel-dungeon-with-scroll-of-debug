@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
@@ -157,9 +158,8 @@ public class PixelScene extends Scene {
 			renderedTextPageSize = 1024;
 		}
 		//asian languages have many more unique characters, so increase texture size to anticipate that
-		if (Messages.lang() == Languages.KOREAN ||
-				Messages.lang() == Languages.CHINESE ||
-				Messages.lang() == Languages.JAPANESE){
+		if (Messages.lang() == Languages.CHI_SMPL || Messages.lang() == Languages.CHI_TRAD ||
+				Messages.lang() == Languages.KOREAN || Messages.lang() == Languages.JAPANESE){
 			renderedTextPageSize *= 2;
 		}
 		Game.platform.setupFontGenerators(renderedTextPageSize, SPDSettings.systemFont());
@@ -324,8 +324,11 @@ public class PixelScene extends Scene {
 	}
 
 	public static RenderedTextBlock renderTextBlock(String text, int size ){
-		RenderedTextBlock result = new RenderedTextBlock( text, size*defaultZoom);
-		result.zoom(1/(float)defaultZoom);
+		//some systems (macOS mainly) require this back buffer check to ensure
+		// that we're working with real pixels, not logical ones
+		float scale = Game.width / (float)Gdx.graphics.getBackBufferWidth();
+		RenderedTextBlock result = new RenderedTextBlock( text, size*Math.round(defaultZoom*scale));
+		result.zoom(1/(float)Math.round(defaultZoom*scale));
 		return result;
 	}
 
